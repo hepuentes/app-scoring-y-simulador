@@ -1,27 +1,28 @@
 import streamlit as st
 
-# Autenticación básica
+# Función de autenticación básica
 def check_password():
-    """Returns `True` if the user entered the correct password."""
+    """Devuelve True si la contraseña ingresada es correcta."""
     def password_entered():
         if st.session_state["password"] == "test123":
             st.session_state["password_correct"] = True
-            del st.session_state["password"]  # don't store password
+            del st.session_state["password"]  # No guardar la contraseña en el estado
         else:
             st.session_state["password_correct"] = False
 
     if "password_correct" not in st.session_state:
-        # First run, show input for password.
+        # Mostrar entrada para contraseña en el primer intento
         st.text_input("Contraseña", type="password", on_change=password_entered, key="password")
         return False
     elif not st.session_state["password_correct"]:
-        st.error("Contraseña incorrecta.")
+        st.error("Contraseña incorrecta. Inténtalo de nuevo.")
         return False
     else:
         return True
 
-# Definir funciones para scoring
+# Funciones para el scoring
 def calcular_puntaje(ingresos, edad, historial_crediticio):
+    """Calcula el puntaje del cliente."""
     puntaje = ingresos * 0.2 + (edad * 5)
     if historial_crediticio == "Bueno":
         puntaje += 100
@@ -30,6 +31,7 @@ def calcular_puntaje(ingresos, edad, historial_crediticio):
     return puntaje
 
 def determinar_perfil_riesgo(puntaje):
+    """Determina el perfil de riesgo basado en el puntaje."""
     if puntaje >= 700:
         return "Bajo"
     elif puntaje >= 500:
@@ -38,6 +40,7 @@ def determinar_perfil_riesgo(puntaje):
         return "Alto"
 
 def determinar_tasa_interes(perfil_riesgo):
+    """Asigna una tasa de interés según el perfil de riesgo."""
     if perfil_riesgo == "Bajo":
         return 10
     elif perfil_riesgo == "Medio":
